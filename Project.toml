@@ -3,6 +3,11 @@ uuid = "f5a38104-9b45-4271-a786-09a83c4f15bf"
 authors = ["Roger-luo <rogerluo.rl18@gmail.com> and contributors"]
 version = "0.1.0"
 
+[deps]
+AWS = "fbe9abb3-538b-5e4e-ba9e-bc94f4f92ebc"
+Configurations = "5218b696-f38b-4ac9-8b61-a12ec717816d"
+HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
+
 [compat]
 julia = "1"
 
