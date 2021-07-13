@@ -1,7 +1,16 @@
+using BrokenRecord
 using AWSBraket
 using AWSBraket.Schema
 using Configurations
 using JSON
+using HTTP
+using Test
+using AWS
+using AWS: @service
+@service Braket
+@service S3
+
+BrokenRecord.configure!(path=joinpath(pkgdir(AWSBraket), "test", "records"), ignore_headers=["Authorization"])
 
 bell = Schema.Program(;
     instructions=[
@@ -10,25 +19,33 @@ bell = Schema.Program(;
     ],
 )
 
-task, status = AWSBraket.create_quantum_task(;
-    program=bell,
-    device_arn="arn:aws:braket:::device/quantum-simulator/amazon/sv1",
-    bucket="amazon-braket-8865d8c99645",
-    folder="braket",
-)
+task, status = BrokenRecord.playback("create_quantum_task.json") do
+    AWSBraket.create_quantum_task(;
+        program=bell,
+        device_arn="arn:aws:braket:::device/quantum-simulator/amazon/sv1",
+        bucket="amazon-braket-8865d8c99645",
+        folder="braket",
+    )    
+end
 
-info = AWSBraket.get_quantum_task(task)
-# AWSBraket.cancel_quantum_task(info.id, task)
+info = BrokenRecord.playback("get_quantum_task.json") do
+    AWSBraket.get_quantum_task(task)    
+end
 
-using HTTP
-using AWS: @service
-@service Braket
-@service S3
 
-# S3.list_objects(info.outputS3Bucket)["Contents"]
-content = S3.get_object(info.outputS3Bucket, info.outputS3Directory * "/results.json")
-JSON.parse(String(content))
+@test_throws AWS.AWSExceptions.AWSException BrokenRecord.playback("cancel_quantum_task.json") do
+    AWSBraket.cancel_quantum_task(info.id, task)    
+end
 
+content = BrokenRecord.playback("get_result_object.json") do
+    S3.get_object(info.outputS3Bucket, info.outputS3Directory * "/results.json")    
+end
+
+result = JSON.parse(String(content))
+result["measurements"]
+
+
+# NOTE: the results type is broken currently
 # bell = Schema.Program(;
 #     instructions=[
 #         Schema.H(;target=0),
@@ -41,25 +58,4 @@ JSON.parse(String(content))
 #             targets=[1],
 #         )
 #     ]
-# )
-
-# deviceParameters = Schema.GateModelSimulatorDeviceParameters(
-#     paradigmParameters=Schema.GateModelParameters(
-#         qubitCount=2, disableQubitRewiring=false,
-#     )
-# )
-
-# JSON.json(to_dict(bell; include_defaults=true, exclude_nothing=true), 2)|>print
-
-# # direct call
-# task = Braket.create_quantum_task(
-#     JSON.json(to_dict(bell; include_defaults=true, exclude_nothing=true)),
-#     string(uuid1()),
-#     "arn:aws:braket:::device/quantum-simulator/amazon/sv1",
-#     "amazon-braket-8865d8c99645",
-#     "braket",
-#     100,
-#     Dict(
-#         "deviceParameters" => JSON.json(to_dict(deviceParameters; include_defaults=true)),
-#     ),
 # )

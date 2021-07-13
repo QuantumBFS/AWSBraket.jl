@@ -7,6 +7,16 @@ mutable struct DeviceMenu <: TerminalMenus.AbstractMenu
     selected::Int
 end
 
+"""
+    DeviceMenu([devices, regions]; pagesize::Int=5)
+
+Create a DeviceMenu to display available devices interactively in the Julia REPL.
+
+# Arguments
+
+- `devices::Vector{Schema.DeviceInfo}`: optional, a list of devices.
+- `regions::Vector{String}`: optional, a list of regions corresponding to the device list.
+"""
 function DeviceMenu(; pagesize::Int=5)
     all_devices = Schema.DeviceInfo[]
     regions = String[]
