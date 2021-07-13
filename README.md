@@ -1,5 +1,8 @@
 # AWSBraket
 
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://QuantumBFS.github.io/IBMQClient.jl/stable)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://QuantumBFS.github.io/IBMQClient.jl/dev)
+
 *This package is in beta*
 
 Julia Wrapper for the AWS Braket REST API. This API wrapper is based on
