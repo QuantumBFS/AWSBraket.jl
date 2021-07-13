@@ -1,0 +1,4 @@
+[deps]
+DocThemeIndigo = "8bac0ac5-51bf-41f9-885e-2bf1ac2bec5f"
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+AWSBraket = "f5a38104-9b45-4271-a786-09a83c4f15bf"
