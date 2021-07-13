@@ -15,8 +15,8 @@ end
 @option struct BraketTaskInfo
     createdAt::String
     deviceArn::String
-    deviceParameters::String
-    endedAt::String
+    deviceParameters::Maybe{String}
+    endedAt::Maybe{String}
     failureReason::Maybe{String} = nothing
     id::String
     outputS3Bucket::String
