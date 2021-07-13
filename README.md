@@ -1,7 +1,7 @@
 # AWSBraket
 
-[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://QuantumBFS.github.io/IBMQClient.jl/stable)
-[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://QuantumBFS.github.io/IBMQClient.jl/dev)
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://QuantumBFS.github.io/AWSBraket.jl/stable)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://QuantumBFS.github.io/AWSBraket.jl/dev)
 
 *This package is in beta*
 
