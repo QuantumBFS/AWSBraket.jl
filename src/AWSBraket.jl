@@ -10,6 +10,7 @@ using AWS
 using UUIDs
 using HTTP
 using JSON
+using Configurations: from_dict_validate
 using AWS: @service
 
 @service STS
@@ -21,7 +22,7 @@ function parse_device_info(d)
         d["deviceCapabilities"] = JSON.parse(d["deviceCapabilities"])
     end
 
-    return from_dict(Schema.DeviceInfo, d)::Schema.DeviceInfo
+    return from_dict_validate(Schema.DeviceInfo, d)::Schema.DeviceInfo
 end
 
 function get_device(arn::String; aws_config=AWS.global_aws_config())
@@ -96,5 +97,9 @@ end
 function cancel_quantum_task(client_token::String, task_arn::String)
     Braket.cancel_quantum_task(client_token, HTTP.escapeuri(task_arn))
 end
+
+using Crayons.Box
+using REPL.TerminalMenus
+include("menu.jl")
 
 end

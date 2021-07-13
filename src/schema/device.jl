@@ -268,7 +268,7 @@ end
     deviceName::String
     deviceType::String
     deviceStatus::String
-    deviceCapabilities::DeviceCapabilities
+    deviceCapabilities::Maybe{DeviceCapabilities} = nothing
 end
 
 function Configurations.convert_to_option(::Type{BraketDeviceSchema}, ::Type{VersionNumber}, x)
