@@ -19,18 +19,17 @@ bell = Schema.Program(;
     ],
 )
 
-task, status = BrokenRecord.playback("create_quantum_task.json") do
-    AWSBraket.create_quantum_task(;
+#task, status = BrokenRecord.playback("create_quantum_task.json") do
+task, status = AWSBraket.create_quantum_task(;
         program=bell,
         device_arn="arn:aws:braket:::device/quantum-simulator/amazon/sv1",
         bucket="amazon-braket-8865d8c99645",
         folder="braket",
     )    
-end
 
-info = BrokenRecord.playback("get_quantum_task.json") do
-    AWSBraket.get_quantum_task(task)    
-end
+#info = BrokenRecord.playback("get_quantum_task.json") do
+info = AWSBraket.get_quantum_task(task)
+#end
 
 
 @test_throws AWS.AWSExceptions.AWSException BrokenRecord.playback("cancel_quantum_task.json") do
@@ -46,16 +45,16 @@ result["measurements"]
 
 
 # NOTE: the results type is broken currently
-# bell = Schema.Program(;
-#     instructions=[
-#         Schema.H(;target=0),
-#         Schema.CNot(;control=0, target=1),
-#     ],
-#     results=[
-#         Schema.Results(;
-#             type=Schema.EXPECTATION,
-#             observable=["x"],
-#             targets=[1],
-#         )
-#     ]
-# )
+bell = Schema.Program(;
+    instructions=[
+        Schema.H(;target=0),
+        Schema.CNot(;control=0, target=1),
+    ],
+    results=[
+        Schema.Results(;
+            type=Schema.EXPECTATION,
+            observable=["x"],
+            targets=[1],
+        )
+    ]
+)

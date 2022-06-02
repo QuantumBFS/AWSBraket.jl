@@ -24,12 +24,18 @@ end
 
 @enum DeviceActionType begin
     JAQCD
+    OPENQASM
+    BLACKBIRD
     ANNEALING
 end
 
 function Base.convert(::Type{DeviceActionType}, x::String)
     if x == "braket.ir.jaqcd.program"
         return JAQCD
+    elseif x == "braket.ir.openqasm.program"
+        return OPENQASM
+    elseif x == "braket.ir.blackbird.program"
+        return BLACKBIRD
     elseif x == "braket.ir.annealing.problem"
         return ANNEALING
     else
@@ -91,7 +97,8 @@ function Configurations.convert_to_option(::Type{DeviceServiceProperties}, ::Typ
 end
 
 function Configurations.convert_to_option(::Type{DeviceServiceProperties}, ::Type{DateTime}, x::String)
-    DateTime(split(x, '.')[1]) # truncate microsecond etc.
+    y = split(x, '+')[1]
+    DateTime(split(y, '.')[1]) # truncate microsecond etc.
 end
 
 @option struct ResultType  <: BraketDeviceSchema
@@ -99,13 +106,25 @@ end
     observables::Maybe{Vector{String}} = nothing
     minShots::Maybe{Int} = nothing
     maxShots::Maybe{Int} = nothing
+    maxTargets::Maybe{Int} = nothing
 end
 
 @option struct DeviceActionProperties  <: BraketDeviceSchema
     version::Vector{VersionNumber}
+    maximumQubitArrays::Maybe{Int} = 1
+    maximumClassicalArrays::Maybe{Int} = 1
+    supportsUnassignedMeasurements::Maybe{Bool} = true
+    requiresContiguousQubitIndices::Maybe{Bool} = false
+    requiresAllQubitsMeasurement::Maybe{Bool} = true
     actionType::DeviceActionType
+    forbiddenArrayOperations::Maybe{Vector{String}} = nothing
+    forbiddenPragmas::Maybe{Vector{String}} = nothing
+    supportedPragmas::Maybe{Vector{String}} = nothing
     supportedOperations::Maybe{Vector{String}} = nothing
     supportedResultTypes::Maybe{Vector{ResultType}} = nothing
+    supportPhysicalQubits::Maybe{Bool} = false 
+    supportsPhysicalQubits::Maybe{Bool} = false 
+    supportsPartialVerbatimBox::Maybe{Bool} = false 
     disabledQubitRewiringSupported::Maybe{Bool} = nothing
 end
 
@@ -116,9 +135,16 @@ end
 
 @option struct GateModelQpuParadigmProperties <: BraketDeviceSchema
     braketSchemaHeader::Header = Header(;name="braket.device_schema.gate_model_qpu_paradigm_properties", version=v"1")
-    qubitCount::Int
+    qubitCount::Maybe{Int} = nothing
     connectivity::Maybe{DeviceConnectivity} = nothing
     nativeGateSet::Maybe{Vector{String}} = nothing
+    compilerDefault::Maybe{String} = nothing
+    compiler::Maybe{Vector{String}} = nothing
+    target::Maybe{String} = nothing
+    layout::Maybe{String} = nothing
+    supportedLanguages::Maybe{Vector{String}} = nothing
+    gateParameters::Maybe{Dict{String, Vector{Vector{Float64}}}} = nothing
+    modes::Maybe{Dict{String, Float64}} = nothing
 end
 
 @option struct GateModelParameters <: BraketDeviceSchema
@@ -252,6 +278,7 @@ end
     deviceParameters::Dict{String, Any}
     paradigm::Maybe{GateModelQpuParadigmProperties} = nothing
     provider::Maybe{Dict{String, Any}} = nothing
+    standardized::Maybe{Any} = nothing
 end
 
 function Configurations.convert_to_option(::Type{DeviceCapabilities}, ::Type{Dict{DeviceActionType, DeviceActionProperties}}, x::Dict{String, Any})
