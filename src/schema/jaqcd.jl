@@ -244,7 +244,7 @@ end
 end
 
 # TODO: support field name selector in upstream
-function Configurations.to_dict(::Type{Program}, insts::Vector{Any}, option::Configurations.ConvertOption)
+function Configurations.to_dict(::Type{Program}, insts::Vector{Any}, option::Configurations.ToDictOption)
     map(insts) do inst
         to_dict(typeof(inst), inst, option)
     end

@@ -25,6 +25,7 @@ end
     shots::Int
     status::String
     tags::Dict{String, String}
+    hybridJobArn::Maybe{String} = nothing
 end
 
 Base.show(io::IO, x::BraketTaskInfo) = pprint_struct(io, x)
